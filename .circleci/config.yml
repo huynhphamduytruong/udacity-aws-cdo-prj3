@@ -32,6 +32,10 @@ commands:
               exit 1
             fi
 
+orbs:
+  node: "circleci/node:4.1"
+  slack: circleci/slack@4.1
+
 jobs:
   build-frontend:
     docker:
@@ -112,9 +116,6 @@ jobs:
             npm audit --audit-level=critical
 
   scan-backend:
-    orbs:
-      node: "circleci/node:4.1"
-      slack: circleci/slack@4.1
     docker:
       - image: circleci/node:13.8.0
     steps:
