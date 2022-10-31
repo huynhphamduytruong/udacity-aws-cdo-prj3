@@ -231,12 +231,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - build-backend
+          keys: [backend-build]
       - run:
           name: Run migrations
           command: |
             cd backend
+            npm i
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
@@ -261,8 +261,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - build-frontend
+          keys: [frontend-build]
       - run:
           name: Get backend url
           command: |
@@ -379,8 +378,8 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
