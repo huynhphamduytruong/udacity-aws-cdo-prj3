@@ -225,6 +225,9 @@ jobs:
   run-migrations:
     docker:
       - image: sleavely/node-awscli:14.x
+        environment:
+          KVDB_BUCKET_ID: $KVDB_BUCKET_ID
+          KVDB_SECRET_KEY: $KVDB_SECRET_KEY
     steps:
       - checkout
       - restore_cache:
