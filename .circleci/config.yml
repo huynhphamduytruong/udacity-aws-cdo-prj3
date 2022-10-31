@@ -19,20 +19,20 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here
+      workflow_id:
+        type: string
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
+          when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
+            SUCCESS=$(curl "https://kvdb.io/${KVDB_BUCKET_ID}/migration_<<parameters.workflow_id>>" -u "${KVDB_SECRET_KEY}:")
             if(( $SUCCESS==1 )); 
-            then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
+            then            
+              cd backend
+              npm install
+              npm run migrations:revert
             fi
 
 orbs:
@@ -237,9 +237,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            cat .env
-            npm i
-            npm run build
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
@@ -248,36 +245,43 @@ jobs:
             if grep -q "has been executed successfully"  ./backend/migrations_dump.txt   
             then
               curl https://kvdb.io/${KVDB_BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} \
-                -H "X-Api-Key: ${KVDB_SECRET_KEY}" \
+                -u "${KVDB_SECRET_KEY}:" \
                 -d "1"
             else
               curl https://kvdb.io/${KVDB_BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} \
-                -H "X-Api-Key: ${KVDB_SECRET_KEY}" \
+                -u "${KVDB_SECRET_KEY}:" \
                 -d "0"
             fi
       - destroy-environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
-#   deploy-frontend:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Get backend url
-#           command: |
-#             # your code here
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "${API_URL}"
-#       - run:
-#           name: Deploy frontend objects
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure
+  deploy-frontend:
+    docker:
+      - image: sleavely/node-awscli:14.x
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - build-frontend
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(aws cloudformation describe-stacks --stack-name udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" --query "Stacks[0].Outputs[0].OutputValue" --output text)
+            API_URL="http://${BACKEND_IP}:3030"
+            echo "NODE_ENV=production" > frontend/.env
+            echo "API_URL=${API_URL}" >> frontend/.env
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          working_directory: ./frontend
+          command: |
+            npm i
+            npm run build
+            aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - revert-migrations:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 #   deploy-backend:
 #     docker:
