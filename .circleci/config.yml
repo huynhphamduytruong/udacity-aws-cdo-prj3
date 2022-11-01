@@ -317,8 +317,6 @@ jobs:
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["70:90:c0:c6:b8:2b:65:59:86:ad:9a:5d:dc:af:c8:a4"]
