@@ -30,11 +30,11 @@ commands:
           when: on_fail
           command: |
             echo "Destroying environment: <<parameters.workflow_id>> "
+            aws s3 rm "s3://udapeople-<< parameters.workflow_id >>" --recursive
             aws cloudformation delete-stack \
               --stack-name "udapeople-frontend-<< parameters.workflow_id >>"
             aws cloudformation delete-stack \
               --stack-name "udapeople-backend-<< parameters.workflow_id >>"
-            aws s3 rm "s3://udapeople-<< parameters.workflow_id >>" --recursive
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
@@ -325,24 +325,18 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --no-cache \
-            python3 \
-            py3-pip \
-            && pip3 install --upgrade pip \
-            && pip3 install \
-            awscli \
-            && rm -rf /var/cache/apk/*
             apk add --update ansible curl rsync openssh nodejs npm
             ansible --version
+            pip install awscli
             aws --version
       - run:
           name: Deploy backend
           command: |
-            cd backend
-            npm i
-            npm run build
-            cd ..
-            tar -C backend -czvf artifact-be-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz .
+            # cd backend
+            # npm i
+            # npm run build
+            # cd ..
+            # tar -C backend -czvf artifact-be-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz .
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
