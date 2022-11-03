@@ -332,11 +332,11 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            # cd backend
-            # npm i
-            # npm run build
-            # cd ..
-            # tar -C backend -czvf artifact-be-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz .
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            tar -C backend -czvf artifact-be-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz .
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
