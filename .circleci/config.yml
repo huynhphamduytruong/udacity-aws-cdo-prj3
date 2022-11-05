@@ -327,7 +327,7 @@ jobs:
             sudo apt update
             sudo apt install software-properties-common
             sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install python3 ansible nodejs npm rsync curl
+            sudo apt install python3 ansible nodejs npm rsync curl gnupg2
             sudo apt install ansible
             /usr/local/bin/python -m pip install --upgrade pip
             pip install awscli
