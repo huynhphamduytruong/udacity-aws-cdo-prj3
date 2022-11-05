@@ -332,8 +332,9 @@ jobs:
             # /usr/local/bin/python -m pip install --upgrade pip
             # pip install awscli
 
+            apk update
             apk add --update ansible
-            apk add --update tar gzip nodejs npm rsync ssh curl
+            apk add --update tar gzip nodejs npm rsync openssh curl
             apk add --update --no-cache python3 py3-pip
             /usr/local/bin/python -m pip install --upgrade pip
             pip install awscli
