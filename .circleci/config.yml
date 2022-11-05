@@ -58,7 +58,6 @@ orbs:
 
 jobs:
   build-frontend:
-    parallelism: 2
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -77,7 +76,6 @@ jobs:
           key: frontend-build
 
   build-backend:
-    parallelism: 2
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -96,7 +94,6 @@ jobs:
           key: backend-build
 
   test-frontend:
-    parallelism: 2
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -111,7 +108,6 @@ jobs:
             npm run test
 
   test-backend:
-    parallelism: 2
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -126,7 +122,6 @@ jobs:
             npm run test
 
   scan-frontend:
-    parallelism: 2
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -145,7 +140,6 @@ jobs:
             exit 0
 
   scan-backend:
-    parallelism: 2
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -339,6 +333,7 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
+            npm install -g typescript
             npm i
             npm run build
             cd ..
