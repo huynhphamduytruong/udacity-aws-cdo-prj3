@@ -49,7 +49,7 @@ commands:
             if (($SUCCESS == 1)); 
             then
               cd backend
-              npm install
+              npm i
               npm run migrations:revert
             fi
 
@@ -68,7 +68,7 @@ jobs:
           name: Build front-end
           command: |
             cd frontend
-            npm install
+            npm i
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -85,7 +85,7 @@ jobs:
           name: Back-end build
           command: |
             cd backend
-            npm install
+            npm i
             npm run build
       - save_cache:
           paths: [backend/node_modules]
@@ -102,7 +102,7 @@ jobs:
           name: Test front-end
           command: |
             cd frontend
-            npm install
+            npm i
             npm run test
 
   test-backend:
@@ -116,7 +116,7 @@ jobs:
           name: Test back-end
           command: |
             cd backend
-            npm install
+            npm i
             npm run test
 
   scan-frontend:
@@ -130,9 +130,15 @@ jobs:
           name: Scan front-end
           command: |
             cd frontend
-            npm install
+            npm i
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
+            npm audit fix --force
+            npm audit fix --force
+            npm audit fix --force
+            npm audit fix --force
+            npm audit fix --force
+            npm audit fix --force
             npm audit fix --force
             npm audit fix --force
             npm audit fix --force
@@ -150,7 +156,7 @@ jobs:
           name: Scan back-end
           command: |
             cd backend
-            npm install
+            npm i
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit fix --force
