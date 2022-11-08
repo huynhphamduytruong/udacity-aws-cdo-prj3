@@ -1,5 +1,5 @@
 URL01: https://github.com/huynhphamduytruong/udacity-aws-cdo-prj3
-URL02: http://udapeople-4c90be5.s3-website-us-east-1.amazonaws.com
+URL02: http://udapeople-94c57b6.s3-website-us-east-1.amazonaws.com
 
 Cloudfront endpoint: http://d33a8e1g4r8tp.cloudfront.net
 Prometheus endpoint: http://ec2-54-92-210-247.compute-1.amazonaws.com:9090/targets
